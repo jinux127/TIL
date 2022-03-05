@@ -10,3 +10,6 @@
 
 ## what is difference between es5 and es6
  - es6가 도입되면서 달라진 점은 무엇이 있을까?
+
+ ## How do browsers work
+ - 브라우저가 어떻게 동작하는지 깊게 알아보자(ing)
