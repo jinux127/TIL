@@ -1,8 +1,6 @@
 # TIL
 끼룩끼룩끼록기록 기록하자
 
-- [namjunemy](https://github.com/namjunemy/TIL) 님에게 영감을 받음!!
-
 
 # javascript
 ## book_modern_javacsript
