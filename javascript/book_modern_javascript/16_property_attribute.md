@@ -70,4 +70,69 @@ console.log(Object.getOwnPropertyDescriptor(person));
  와 같은 프로퍼티 어트리뷰트를 갖는다.
 
 ### 16.3.2 접근자 프로퍼티
-접근자
+접근자 프로퍼티는 자체적으로는 값을 갖지 않고 다른 데이터 프로퍼티의 값을 읽거나 저장할 때 사용하는 접근자 함수로 구성된 프로퍼티이다.
+
+- [[Get]]: get, 프로퍼티의 값을 읽을 때 호출되는 접근자 함수이다.
+- [[Set]]: set, 프로퍼티의 값을 저장할 때 홏ㄹ되는 접근자 함수이다.
+- [[Enumerable]]: enumerable, 데이터 프로퍼티와 같다.
+- [[Configurable]]: configurable, 데이터 프로퍼티와 같다.
+
+위와 같은 프로퍼티 어트리뷰트를 갖는다.
+
+접근자 함수는 getter/setter 함수라고도 부른다.
+
+```jsx
+const person ={
+    // 데이터 프로퍼티
+    firstName: 'jinwoo',
+    lastName: 'Jeong',
+
+    // getter
+    get fullName(){
+        return `${this.firstName} ${this.lastName}`;
+    },
+
+    // setter
+    set fullName(name){
+        [this.firstName, this.lastName] = name.split(' ');
+    }
+};
+
+console.log(person.firstName + ' ' + person.lastName);
+
+// setter 함수 호출
+person.fullName = 'New Name';
+console.log(person);
+
+// getter 함수 호출
+console.log(person.fullName);
+
+// firstName은 데이터 프로퍼티이다.
+let descriptor = Object.getOwnPropertyDescriptor(person, 'firstName');
+console.log(descriptor);
+
+// fullName은 접근자 프로퍼티이다.
+descriptor = Object.getOwnPropertyDescriptor(person, 'fullName');
+console.log(descriptor);
+```
+
+접근자 프로퍼티 fullName으로 프로퍼티 값에 접근하면 내부적으로 [[Get]]메서드가 호출되어 다음과 같이 동작한다.
+
+1. 프로퍼티 키 유효 확인(문자열 또는 심벌)
+2. 프로토타입 체인에서 프로퍼티 검색한다.
+3. 검색된 프로퍼티가 (데이터 / 접근자) 프로퍼티 판단한다.
+4. 접근자 프로퍼티의 [[Get]]의 값, 즉 getter 함수를 호출하여 그 결과를 반환한다.
+
+> 프로토타입
+> - 어떤 객체의 상위 객체의 역할을 하는 객체이다. 하위 객체에게 자신의 프로퍼티와 메서드를 상속한다. 상속받은 하위 객체는 자신의 프로퍼티 또는 메서드인 것처럼 자유롭게 사용한다.
+> - 프로토타입 체인은 프로토타입이 단방향 링크드 리스트 형태로 연결되어 있는 상속 구조를 말한다. 객체의 프로퍼티나 메서드에 접근하려고 할 때 해당 객체에 접근하려는 프로퍼티 또는 메서드가 없다면 체인을 따라 프로퍼티나 메서드를 차례대로 검색한다.
+
+접근자/데이터 프로퍼티 구별하는 방법
+```jsx
+// 일반 객체의 __proto__는 접근자 프로퍼티
+Object.getOwnPropertyDescriptor(Object.prototype, '__proto__');
+
+// 함수 객체의 prototype은 데이터 프로퍼티
+Object.getOwnPropertyDescriptor(function() {}, 'prototype');
+```
+## 16.4 프로퍼티 정의
