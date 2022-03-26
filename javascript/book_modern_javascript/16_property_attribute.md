@@ -136,3 +136,26 @@ Object.getOwnPropertyDescriptor(Object.prototype, '__proto__');
 Object.getOwnPropertyDescriptor(function() {}, 'prototype');
 ```
 ## 16.4 프로퍼티 정의
+Object.defineProperty(객체의 참조, '프로퍼티의 키', 프로퍼티 디스크립터 객체) -> 프로퍼티의 어트리뷰트를 정의할 수 있다.
+
+프로퍼티 디스크립터 객체의 일부 생략 할 수 있다. 이때는 기본값이 적용된다.
+- value -> undefined
+- get -> undefined
+- set -> undefined
+- writable -> false
+- enumerable -> false
+- configurable -> false
+
+Object.definedProperties -> 여러 개의 프로퍼티를 한번에 정의할 수 있다.
+
+## 16.5 객체 변경 방지
+객체는 변경 가능한 값이므로 재할당 없이 직접 변경할 수 있다. JS는 객체의 변경을 방지하는 다양한 메서드를 제공한다. 객체 변경 방지 메서드들은 객체의 변경을 금지하는 강도가 다르다.
+
+- 객체 확장 금지: Object.preventExtensions 메서드 / 프로퍼티 추가 X, 삭제 O, 읽기 O, 쓰기 O, 어트리뷰트 재정의 O
+- 객체 밀봉: Object.seal 메서드 / 추가 X, 삭제 X, 읽기 O, 쓰기 O, 어트리뷰트 재정의 X
+- 객체 동결: Object.freeze 메서드 / 추가 X, 삭제 X, 읽기 O, 쓰기 X, 어트리뷰트 재정의 X
+
+### 16.5.4 불변 객체
+변경 방지 메서드들은 얕은 변경 방지로 직속 프로퍼티만 변경이 방지되고 중첩 객체까지는 영향을 주지는 못한다. 따라서 Object.freeze 메서드로 객체를 동결하여도 중접 객체까지 동결할 수 없다.
+
+객체의 중첩 객체까지 동결하려면 재귀적으로 Object.freeze메서드를 호출해야 한다.
