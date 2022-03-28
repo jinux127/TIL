@@ -46,4 +46,19 @@ class MyClass{
 
 제너레이터 객체
  - Symbol.iterator 메서드를 상속받는 이터러블
- - value, done 프로퍼티를 갖는 이터레이터 리절트 객체를 반환하는 next 메서드를 소유하는 이터레이터
+ - value, done 프로퍼티를 갖는 이터레이터 리절트 객체를 반환하는 next 메서드를 소유하는 이터레이터이다. 제너레이터 객체는 next 메서드를 가지는 이터레이터이므로 Symbol.iterator 메서드를 호출해서 별도로 이터레이터를 생성할 필요가 없다.
+ ```jsx
+//  제너레이터 함수
+function* genFunc(){
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+const generator = genFunc();
+// 제너레이터 객체는 이터러블 이면서 동시에 이터레이터이다.
+// 이터러블
+console.log(Symbol.iterator in generator) // true
+// 이터레이터 
+console.log('next' in generator); // true
+```
