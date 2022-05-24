@@ -625,3 +625,79 @@ function performUnitOfWork(fiber) {
   }
 }
 ```
+
+## 5. 렌더와 커밋 단계
+
+아직 다른 문제가 하나 있다.
+
+```jsx
+function performUnitOfWork(fiber) {
+  if (!fiber.dom) {
+    fiber.dom = createDom(fiber)
+  }
+  ​
+  if (fiber.parent) {
+    fiber.parent.dom.appendChild(fiber.dom)
+  }
+  ​
+  const elements = fiber.props.children
+  ...
+```
+
+엘리먼트에서 작업을 수행할 때 마다 각각의 돔에 새로운 노드를 추가하고 있다. 그리고 브라우저가 렌더링이 진행되고있는 중간에 난입할 수 있는데, 이 경우 유저는 미완성된 UI를 보게 된다.
+
+```jsx
+function performUnitOfWork(fiber) {
+  if (!fiber.dom) {
+    fiber.dom = createDom(fiber)
+  }
+
+  // remove​d
+  ​
+  const elements = fiber.props.children
+  ...
+```
+
+이를 위해 dom을 변경시키는부분을 제거하고
+
+대신 fiber트리의 루트를 추적합니다. 이를 작업중인 루트 (work in progress) wipRoot라고 한다.
+
+```jsx
+function commitRoot() {
+  // TODO add nodes to dom
+}
+
+function render() {
+  ...
+
+  function workLoop(deadline) {
+    ...
+
+    if (!nextUnitOfWork && wipRoot) {
+      commitRoot()
+    }
+    requestIdleCallback(workLoop)
+  }
+    ...
+```
+
+일단 모든 작업이 끝나고 나면 (더 이상 다음 작업이 없는 경우), 전체 fiber 트리를 돔에 커밋한다.
+
+```jsx
+function commitRoot() {
+  commitWork(wipRoot.child)
+  wipRoot = null
+}
+  ​
+function commitWork(fiber) {
+  if (!fiber) {
+    return
+  }
+  const domParent = fiber.parent.dom
+  domParent.appendChild(fiber.dom)
+  commitWork(fiber.child)
+  commitWork(fiber.sibling)
+}
+```
+
+이 과정은 commitRoot 함수에서 이루어지고 여기서 재귀적으로 모든 노드를 dom에 추가한다.
