@@ -701,3 +701,34 @@ function commitWork(fiber) {
 ```
 
 이 과정은 commitRoot 함수에서 이루어지고 여기서 재귀적으로 모든 노드를 dom에 추가한다.
+
+## 6. 재조정
+
+이제까지 돔에 요소들을 넣는 작업을 했다. 갱신과 삭제는 어떻게 하는 것 일까?
+
+render 함수로 얻은 엘리먼트들을 마지막으로 커밋한 fiber트리와 비교해야 한다.
+
+```jsx
+function commitRoot() {
+  commitWork(wipRoot.child);
+  currentRoot = wipRoot;
+  wipRoot = null;
+}
+
+function render(element, container) {
+  wipRoot = {
+    dom: container,
+    props: {
+      children: [element],
+    },
+    alternate: currentRoot,
+  };
+  nextUnitOfWork = wipRoot;
+}
+
+let nextUnitOfWork = null;
+let currentRoot = null;
+let wipRoot = null;
+```
+
+커밋이 끝난 다음에는 마지막으로 돔에 커심된 fiber 트리를 저장할 필요가 있습니다. 이를 currentRoot 라고 한다. 또 모든 fiber에 alternate 라는 속성을 추가해야 한다. 이 속성은 이전의 커밋단계에서 돔에 추가했떤 오래된 fiber에 대한 링크이다.
