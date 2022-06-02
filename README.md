@@ -16,6 +16,6 @@
 
 - 브라우저가 어떻게 동작하는지 깊게 알아보자(ing)
 
-# components
+# [components](https://jinux127.github.io/TIL/)
 
--
+- 컴포넌트 버튼, 툴팁, 디자인 들
